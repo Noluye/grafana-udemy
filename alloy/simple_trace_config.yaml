@@ -1,0 +1,34 @@
+logging {
+  level  = "debug"
+  format = "logfmt"
+}
+
+otelcol.receiver.otlp "default" {
+  grpc {
+    endpoint = "127.0.0.1:14317"
+  }
+
+  output {
+    //metrics = [otelcol.processor.batch.default.input]
+    //logs    = [otelcol.processor.batch.default.input]
+    traces  = [otelcol.processor.batch.default.input]
+  }
+}
+
+otelcol.processor.batch "default" {
+  output {
+    //metrics = [otelcol.exporter.otlp.default.input]
+    //logs    = [otelcol.exporter.otlp.default.input]
+    traces  = [otelcol.exporter.otlp.tempo.input]
+  }
+}
+
+otelcol.exporter.otlp "tempo" {
+  client {
+    endpoint = "127.0.0.1:4317"
+    tls {
+            insecure             = true
+            insecure_skip_verify = true
+    }
+  }
+}
